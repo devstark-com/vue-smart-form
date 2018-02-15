@@ -1,7 +1,7 @@
 {
   "name": "vue-smart-form",
   "description": "Smart mixin implements basic features of form behavior",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": {
     "name": "Saymon",
     "email": "saymon.biz@gmail.com"
