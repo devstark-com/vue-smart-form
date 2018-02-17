@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import mixSmartForm from './mixins/smart-form/'
+import mixFormSubmitter from './mixins/form-submitter/'
 
 // Install the plugin
 export function install (Vue, options) {
@@ -11,7 +12,8 @@ export function install (Vue, options) {
 
 // Expose exeports
 export {
-  mixSmartForm
+  mixSmartForm,
+  mixFormSubmitter
 }
 
 /* -- Plugin definition & Auto-install -- */
