@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import _ from 'lodash'
 export default {
   data () {
@@ -13,7 +12,7 @@ export default {
     }
 
     _.forEach(this.$options.forms, function (formId) {
-      Vue.set(this.submitter, formId, {
+      this.$set(this.submitter, formId, {
         sending: false,
         errorResponse: null
       })
