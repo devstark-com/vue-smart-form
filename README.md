@@ -78,6 +78,7 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 ### mixSmartForm
 
 **Props**
+
 |name|description|
 |----|-----------|
 |uid||
@@ -89,6 +90,7 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 |touchDelay||
 
 **Data properties**
+
 |name|description|
 |----|-----------|
 |fields||
@@ -96,6 +98,7 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 |subforms||
 
 **Computed properties**
+
 |name|description|
 |----|-----------|
 |$vstate||
@@ -105,6 +108,7 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 |areSubformsDirty||
 
 **Methods**
+
 |name|description|
 |----|-----------|
 |formDataCompose||
