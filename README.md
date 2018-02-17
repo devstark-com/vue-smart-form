@@ -9,7 +9,7 @@ Plugin based on `vuelidate` package and doesn't work without it, so `vuelidate` 
 
 **Form mixin features:**
 - sync with parent via `v-model`
-- sync with parent via `state` prop with `sync` modifier
+- sync fields values and validation state with parent via `state` prop with `sync` modifier
 - reactive validation state
 - merging of client-side and server-side validation errors to provide the easy way to display validation errors messages of both types in one place
 - subforms validation with reactive validation state tree (also syncable via `state.sync`)
@@ -81,37 +81,64 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 
 |name|description|
 |----|-----------|
-|uid||
-|value||
-|state||
-|sending||
-|serverResponse||
-|disableSuccessFields||
-|touchDelay||
+|uid|Unique form identifier. Can be used for repeateable forms rendered via v-for to handle vstate updates in parent|
+|value|Object with initial values, the part of binding with parent via v-model. Useful only if we need to populate form with any data from parent component|
+|state|The form state contains form fields values and form validation state. This prop is in sync with a parent via `.sync` modifier|
+|sending|Should be passed from parent and used inside a form to indicate that request is performing|
+|serverResponse|Response from server if code is 400. Should be passed from parent. Triggers displaying error messages from server-side to user|
+|disableSuccessFields|Allows to disable success state for all or for some array of fields|
+|touchDelay|Delay in ms between touch() method called and validation really triggered ($touch called)|
 
 **Data properties**
 
 |name|description|
 |----|-----------|
-|fields||
-|vmessages||
-|subforms||
+|fields|All form fields used via `v-model` should be placed inside this object|
+|vmessages|All validation messages should be described here|
+|subforms|Subforms states objects. Validation state of each particular subform should be exeplicitly binded via `state.sync`|
 
 **Computed properties**
 
 |name|description|
 |----|-----------|
-|$vstate||
-|$vf||
-|isFormComplete||
-|subformsHasErrors||
-|areSubformsDirty||
+|$vstate|Aggregated validation state with merged client & server side validation errors. See its structure under this table|
+|$vf|Just a shorthand for `$vstate.fields`|
+|isFormComplete|Returns `true` if all fields are dirty and valid (all required fields filled with valid values)|
+|areSubformsComplete|Indicates are all subforms complete|
+|subformsHasErrors|Indicates are there errors in subforms|
+|areSubformsDirty|Returns `true` if all subforms are dirty, and `false` if at least one not|
+
+`$vstate` structure
+
+```javascript
+{
+  dirty: Boolean, // true if at least one field is dirty (was touched)
+  error: Boolean, // true if at least one field has an error (subforms errors are not included)
+  complete: Boolean, // true if all fields are complete (was filled and successfully validated at the client-side)
+  client: Boolean, // true if there is at least one client-side validation error
+  server: Boolean, // true if there is at least one server-side validation error
+  fields: { // object contains validation details by each field
+    somefield: {
+      dirty: Boolean, // true if the field was touched
+      complete: Boolean, // true if the field was touched and successfully validated
+      error: Boolean, // true if there is validation error (client-side or server-side whatever)
+      msg: String, // client-side validation message from `vmessages` or raw message received from server-side
+      source: String, // indicates error source, can be 'client' or 'server'
+      type: String // 'is-success', 'is-danger' - can be used to setup appropriate class to a field wrapper
+    }
+  },
+  subforms: { // aggregated info about subforms validation result
+    error: Boolean, // true if at least one subform has an error
+    complete: Boolean // true if all subforms are complete
+  }
+}
+```
 
 **Methods**
 
 |name|description|
 |----|-----------|
-|formDataCompose||
+|formDataCompose|Can be overridden in components to define a custom logic of composing data before 'submit' event emitted|
 |setServerErrors||
 |formatServerErrors||
 |onInput||
