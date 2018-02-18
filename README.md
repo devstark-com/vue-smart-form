@@ -148,6 +148,8 @@ Expected format is:
   //...
 }
 ```
+> ☝️ Although each field can have an array of error messages, for now, in `$vf.fieldName.msg` mixin uses only the first one
+
 So if your back-end send you e.g. the following:
 ```javascript
 [
@@ -169,7 +171,7 @@ Vue.use(VueSmartForm, {
   }
 })
 ```
-
+Now you can access error message from your back-end via the same way as for client-side validation messages: `$vf.fieldName.msg`
 # mixFormSubmitter
 
 **Component option**
