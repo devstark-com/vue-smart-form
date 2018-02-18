@@ -522,6 +522,9 @@ export default {
       this.submitResult(this.formDataCompose())
     },
 
+    /**
+     * @todo - data arg is not used, need take a look...
+     */
     submitResult (data) {
       this.$emit('submit', this.formDataCompose())
     }
