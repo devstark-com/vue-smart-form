@@ -83,9 +83,9 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 |----|-----------|
 |uid|Unique form identifier. Can be used for repeateable forms rendered via v-for to handle vstate updates in parent|
 |value|Object with initial values, the part of binding with parent via v-model. Useful only if we need to populate form with any data from parent component|
-|state|The form state contains form fields values and form validation state. This prop is in sync with a parent via `.sync` modifier|
-|sending|Should be passed from parent and used inside a form to indicate that request is performing|
-|serverResponse|Response from server if code is 400. Should be passed from parent. Triggers displaying error messages from server-side to user|
+|state|The readonly form state object aggregates fields values and validation states. This prop is in sync with a parent via `.sync` modifier. It's strongly recommended to use this prop in one-way binding manner just to obtain state updates in parent component.|
+|sending|Should be passed from parent and used inside a form e.g. to show loader or block UI|
+|serverResponse|Response from server if code is 400. Should be passed from parent. Triggers displaying error messages from server-side to user.|
 |disableSuccessFields|Allows to disable success state for all or for some array of fields|
 |touchDelay|Delay in ms between touch() method called and validation really triggered ($touch called)|
 
@@ -138,73 +138,26 @@ You can play around with that [here](https://codesandbox.io/s/3yr865plyp)
 
 |name|description|
 |----|-----------|
-|formDataCompose|Can be overridden in components to define a custom logic of composing data before 'submit' event emitted|
-|setServerErrors||
-|formatServerErrors||
-|onInput||
-|onBlur||
-|autofocusCall||
+|**formDataCompose()**|Returns compacted (without empty values) `fields` object. Can be overridden in components to define a custom logic of composing data for `submit` event payload|
+|**formatServerErrors(response)**|Can be overridden in components to define a custom logic to fit server response with expected format|
+|onInput|Input event handler. Usage example `<input v-model="fields.lastname" @input="onInput('lastname') />"`. This handler performs `this.reset(fieldname)` call and then consecutive calls of `this.vModelSync()` and `this.stateSync()`. If you wanna just reset validation errors and avoid syncing with parent on input, you can use `reset` method as event handler, e.g. `@input="reset('lastname')`|
+|onBlur|Can be used to trigger field validation on blur. It's just a delayed call of `this.touch(fieldname)`|
 |reset||
 |touch||
 |submit||
 |submitResult||
+|autofocusCall||
+
+**Events**
+
+|name|payload|description|
+|----|-------|-----------|
+|**input**|Result of `this.formDataCompose()`|Just a part of `v-model` binding, fires only in one case: right after `onInput(fieldName)` call|
+|**vstateUpdated**|`{`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`uid: 'some-uid',`<br />&nbsp;&nbsp;&nbsp;&nbsp;`vstate: {...}`<br/>`}`|Fires on: <br/> - `created` hook<br/> - `$vstate` changed.<br/> Payload is an object with unique form identifier in `uid` property and with actual validation state object in `vstate` property.|
+|**update:state**|`{`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`uid: 'some-id',`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`fields: {...},`<br/>&nbsp;&nbsp;&nbsp;&nbsp;`vstate: {...}`<br />&nbsp;&nbsp;&nbsp;&nbsp;`subforms: {...}`<br/>`}`|Fires on:<br/> - `created` hook<br/> - `onInput` call<br/> - `$vstate` changed<br/> - `subforms` property in `data` changed<br/> - `beforeDestroy` hook.|
+|**submit**|Result of `this.formDataCompose()`|Fires after `submit()` call but only if validation passed|
 
 
-================================================================================
-
-# Plugin Development
-
-## Installation
-
-The first time you create or clone your plugin, you need to install the default dependencies:
-
-```
-npm install
-```
-
-## Watch and compile
-
-This will run webpack in watching mode and output the compiled files in the `dist` folder.
-
-```
-npm run dev
-```
-
-## Use it in another project
-
-While developping, you can follow the install instructions of your plugin and link it into the project that uses it.
-
-In the plugin folder:
-
-```
-npm link
-```
-
-In the other project folder:
-
-```
-npm link vue-smart-form
-```
-
-This will install it in the dependencies as a symlink, so that it gets any modifications made to the plugin.
-
-## Publish to npm
-
-You may have to login to npm before, with `npm adduser`. The plugin will be built in production mode before getting published on npm.
-
-```
-npm publish
-```
-
-## Manual build
-
-This will build the plugin into the `dist` folder in production mode.
-
-```
-npm run build
-```
-
----
 
 ## License
 
